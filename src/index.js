@@ -24,13 +24,15 @@ class WaitGroup {
     }
   }
 
-  done() {
-    if (this.counters.length === 0)
-      throw new Error('Can\'t call `done` when there are no counters');
-      
+  done(err) {
     const counter = this.counters.splice(0, 1)[0];
-    if (counter)
-      counter.resolve();
+    if (!counter)
+      throw new Error('Can\'t call `done` when there are no counters');
+
+    if (err)
+      return counter.reject(err);
+
+    counter.resolve();
   }
 
   async wait() {
