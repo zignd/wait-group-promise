@@ -60,3 +60,16 @@ test('Should throw an error when you try to call `done` and there are no counter
     t.is(err.message, 'Can\'t call `done` when there are no counters');
   }
 });
+
+test('Should throw the error passed to `done` through the `wait` call without having to wait for the resolution of the other counters', async (t) => {
+  const wg = new WaitGroup();
+  wg.add(2);
+  const p = wg.wait();
+  try {
+    wg.done(new Error('Something happened'));
+    await p;
+    t.fail('Should have thrown an error');
+  } catch(err) {
+    t.is(err.message, 'Something happened');
+  }
+});
