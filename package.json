@@ -1,0 +1,32 @@
+{
+  "name": "wait-group-promise",
+  "version": "0.1.0",
+  "description": "An implementation of the Go's WaitGroup for Node.js",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "ava --fail-fast -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zignd/wait-group-promise.git"
+  },
+  "keywords": [
+    "waitgroup",
+    "wait",
+    "group",
+    "golang",
+    "go",
+    "node.js",
+    "javascript",
+    "wg"
+  ],
+  "author": "Zignd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zignd/wait-group-promise/issues"
+  },
+  "homepage": "https://github.com/zignd/wait-group-promise#readme",
+  "devDependencies": {
+    "ava": "^0.25.0"
+  }
+}
