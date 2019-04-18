@@ -1,5 +1,10 @@
 'use strict';
 
+const Promise = require('bluebird');
+Promise.config({
+  cancellation: true
+});
+
 class WaitGroup {
   constructor() {
     this.waiting = false;
@@ -25,6 +30,9 @@ class WaitGroup {
   }
 
   done(err) {
+    if (!this.waiting)
+      throw new Error('Can\'t call `done` before `wait`');
+
     const counter = this.counters.splice(0, 1)[0];
     if (!counter)
       throw new Error('Can\'t call `done` when there are no counters');
@@ -35,13 +43,33 @@ class WaitGroup {
     counter.resolve();
   }
 
-  async wait() {
-    if (this.waiting)
-      throw new Error('There\'s already an `wait` call waiting resolution');
-    
-    this.waiting = true;
-    await Promise.all(this.counters.map((counter) => counter.promise));
-    this.waiting = false;
+  wait(timeout) {
+    return new Promise((resolve, reject) => {
+      if (this.waiting)
+        throw new Error('There\'s already an `wait` call waiting resolution');
+
+      if (this.counters.length === 0)
+        throw new Error('Can\'t call `wait` when there are no counters');
+
+      let timeoutId;
+      if (timeout) {
+        timeoutId = setTimeout(() => {
+          for (const counter of this.counters)
+            counter.promise.cancel();
+          reject(new Error('Timeout reached'));
+        }, timeout);
+      }
+
+      this.waiting = true;
+      Promise.all(this.counters.map((counter) => counter.promise)).then(() => {
+        return resolve();
+      }).catch((err) => {
+        return reject(err);
+      }).finally(() => {
+        clearTimeout(timeoutId);
+        this.waiting = false;
+      });
+    });
   }
 }
 

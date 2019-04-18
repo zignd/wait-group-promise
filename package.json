@@ -28,5 +28,8 @@
   "homepage": "https://github.com/zignd/wait-group-promise#readme",
   "devDependencies": {
     "ava": "^0.25.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.4"
   }
 }
