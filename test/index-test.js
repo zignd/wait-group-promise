@@ -7,17 +7,17 @@ const WaitGroup = require('../src');
 test('Should wait for the counters to resolve', async (t) => {
   const wg = new WaitGroup();
   t.is(wg.counters.length, 0);
-  
+
   wg.add(2);
   t.is(wg.counters.length, 2);
-  
+
   const wgWaiting = wg.wait();
-  
+
   setTimeout(() => {
     wg.done();
     t.is(wg.counters.length, 0);
   }, 50);
-  
+
   setTimeout(() => {
     wg.done();
     t.is(wg.counters.length, 1);
@@ -25,6 +25,7 @@ test('Should wait for the counters to resolve', async (t) => {
 
   await wgWaiting;
   t.is(wg.counters.length, 0);
+  t.is(wg.waiting, false);
 });
 
 test('Should throw an error when you try to `add` a counter, but wait have been called and have not been resolved yet', async (t) => {
@@ -34,7 +35,7 @@ test('Should throw an error when you try to `add` a counter, but wait have been 
   try {
     wg.add(1);
     t.fail('Should have thrown an error');
-  } catch(err) {
+  } catch (err) {
     t.is(err.message, 'Can\'t call `add` if there\'s an `wait` call waiting resolution');
   }
 });
@@ -46,7 +47,7 @@ test('Should throw an error when you try to call `wait` more than once without t
   try {
     await wg.wait();
     t.fail('Should have thrown an error');
-  } catch(err) {
+  } catch (err) {
     t.is(err.message, 'There\'s already an `wait` call waiting resolution');
   }
 });
@@ -56,8 +57,8 @@ test('Should throw an error when you try to call `done` and there are no counter
   try {
     await wg.done();
     t.fail('Should have thrown an error');
-  } catch(err) {
-    t.is(err.message, 'Can\'t call `done` when there are no counters');
+  } catch (err) {
+    t.is(err.message, 'Can\'t call `done` before `wait`');
   }
 });
 
@@ -69,7 +70,7 @@ test('Should throw the error passed to `done` through the `wait` call without ha
     wg.done(new Error('Something happened'));
     await p;
     t.fail('Should have thrown an error');
-  } catch(err) {
+  } catch (err) {
     t.is(err.message, 'Something happened');
   }
 });
