@@ -17,6 +17,15 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# Build output
+dist
+
+# TypeScript build info
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+
 # nyc test coverage
 .nyc_output
 
