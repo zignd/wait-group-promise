@@ -192,9 +192,10 @@ Publishing is automated by [`.github/workflows/release.yml`](./.github/workflows
 
 The workflow verifies that the tag and package version match, runs the full
 verification suite, and publishes to npm with
-[provenance](https://docs.npmjs.com/generating-provenance-statements). It requires
-an `NPM_TOKEN` repository secret containing a granular access token with publish
-permission for this package.
+[provenance](https://docs.npmjs.com/generating-provenance-statements) using npm
+[trusted publishing](https://docs.npmjs.com/trusted-publishers). No npm token is
+stored; configure `zignd/wait-group-promise` and `release.yml` as a trusted
+publisher for the package on npmjs.com.
 
 ## License
 

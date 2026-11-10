@@ -26,8 +26,10 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
           cache: npm
+
+      - name: Update npm
+        run: npm install --global npm@^11
 
       - name: Install dependencies
         run: npm ci
@@ -45,6 +47,5 @@ jobs:
         run: npm run verify
 
       - name: Publish with provenance
+        # Trusted publishing uses the GitHub Actions OIDC token; no npm token.
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
